@@ -30,6 +30,7 @@
           <li><a href="#world">Buses &amp; air</a></li>
           <li><a href="#replay">Replay</a></li>
           <li><a href="#firmware">Firmware</a></li>
+          <li><a href="#display">Display</a></li>
           <li><a href="#sdk">SDK</a></li>
           <li><a href="#how">How it works</a></li>
         </ul>
@@ -241,6 +242,58 @@
           <span class="pill">RISC-V</span>
           <span class="pill">Device Tree</span>
           <span class="pill">same ELF</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="display">
+      <div class="wrap">
+        <div class="reveal">
+          <h2>Graphics over VNC</h2>
+          <p class="sub">
+            Watch the board’s LCD as it commits frames, and drive a touch panel
+            from your viewer — streamed over loopback VNC with no extra host
+            dependencies beyond the standard library.
+          </p>
+        </div>
+        <div class="split reveal">
+          <div>
+            <p>
+              <code>--display vnc=:N</code> serves the panel on
+              <code>127.0.0.1</code>, port 5900&nbsp;+&nbsp;N, for as long as the
+              run lasts. Nothing appears until the panel commits its first
+              frame. Add <code>wait</code> so the run pauses there until a
+              viewer connects; add <code>fps</code> for a host-side frame-rate
+              readout. The server speaks RFB&nbsp;3.8 with raw encoding — no
+              password, loopback only.
+            </p>
+            <p>
+              On a board with a touch controller, the viewer’s left mouse button
+              is a finger on the panel: press, drag, and release reach the
+              firmware as touches over I²C. The keyboard is ignored. Live touch
+              input is not deterministic, so recording and forking are rejected
+              together with <code>--display</code>.
+            </p>
+            <div class="pill-row">
+              <span class="pill">VNC / RFB 3.8</span>
+              <span class="pill">loopback only</span>
+              <span class="pill">touch → I²C</span>
+              <span class="pill">wait · fps</span>
+            </div>
+          </div>
+          <div class="panel" aria-label="VNC display command">
+            <div class="panel-head">
+              <span>display · stream</span>
+              <span>vnc=:0,wait</span>
+            </div>
+            <pre class="code"><code>fpt explore \
+    --board esp32-s31-korvo-1 \
+    --display vnc=:0,wait \
+    firmware.elf
+
+# viewer → 127.0.0.1:5900
+# left mouse = finger on the panel</code></pre>
+          </div>
         </div>
       </div>
     </section>
