@@ -434,6 +434,64 @@ section.block {
   font-size: 0.92rem;
 }
 
+.sdk-tabs {
+  margin-top: 0.25rem;
+}
+
+.sdk-tablist {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.sdk-tab {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--muted);
+  background: rgba(231, 238, 248, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+}
+
+.sdk-tab:hover,
+.sdk-tab:focus-visible {
+  border-color: rgba(231, 238, 248, 0.3);
+  color: var(--ink);
+  outline: none;
+}
+
+.sdk-tab.is-active {
+  color: var(--ink);
+  border-color: rgba(91, 141, 239, 0.55);
+  background: rgba(91, 141, 239, 0.12);
+}
+
+.sdk-panel .code,
+pre.code {
+  margin: 0;
+  padding: 1.1rem 1.15rem 1.25rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #d7e0ee;
+  background: #0a101a;
+}
+
+.sdk-panel .code code,
+pre.code code {
+  font-family: inherit;
+  white-space: pre;
+}
+
+.coming code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+}
+
 .site-footer {
   border-top: 1px solid var(--line);
   padding: 1.5rem 0 2.5rem;

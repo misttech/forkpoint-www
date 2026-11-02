@@ -22,6 +22,27 @@
     reveals.forEach((el) => el.classList.add("is-in"));
   }
 
+  // SDK language tabs
+  document.querySelectorAll("[data-sdk-tabs]").forEach((root) => {
+    const tabs = root.querySelectorAll(".sdk-tab");
+    const panels = root.querySelectorAll("[data-sdk-panel]");
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const lang = tab.getAttribute("data-sdk-lang");
+        tabs.forEach((t) => {
+          const on = t === tab;
+          t.classList.toggle("is-active", on);
+          t.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        panels.forEach((panel) => {
+          const on = panel.getAttribute("data-sdk-panel") === lang;
+          panel.classList.toggle("is-active", on);
+          panel.hidden = !on;
+        });
+      });
+    });
+  });
+
   // Replay scrub mock
   const events = [
     { t: "0 µs", text: "boot · reset vector" },

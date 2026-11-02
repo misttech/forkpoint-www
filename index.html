@@ -30,6 +30,7 @@
           <li><a href="#world">Buses &amp; air</a></li>
           <li><a href="#replay">Replay</a></li>
           <li><a href="#firmware">Firmware</a></li>
+          <li><a href="#sdk">SDK</a></li>
           <li><a href="#how">How it works</a></li>
         </ul>
         <a class="mist-link" href="https://www.mist-os.com/">Mist</a>
@@ -241,6 +242,82 @@
           <span class="pill">Device Tree</span>
           <span class="pill">same ELF</span>
         </div>
+      </div>
+    </section>
+
+    <section class="block" id="sdk">
+      <div class="wrap">
+        <div class="reveal">
+          <h2>Instrument with the SDK</h2>
+          <p class="sub">
+            The SDK is optional. Baseline runs need none of it. When you want
+            application-level properties the machine cannot infer, drop in a few
+            probes — no heap, filesystem, networking, or OS required. Properties
+            report observations without stopping the firmware.
+          </p>
+        </div>
+
+        <div class="sdk-tabs reveal" data-sdk-tabs>
+          <div class="sdk-tablist" role="tablist" aria-label="SDK language">
+            <button type="button" class="sdk-tab is-active" role="tab" aria-selected="true" data-sdk-lang="c">C</button>
+            <button type="button" class="sdk-tab" role="tab" aria-selected="false" data-sdk-lang="rust">Rust</button>
+          </div>
+
+          <div class="panel sdk-panel is-active" role="tabpanel" data-sdk-panel="c">
+            <div class="panel-head">
+              <span>sdk/c · properties</span>
+              <span>#include &lt;forkpoint.h&gt;</span>
+            </div>
+            <pre class="code"><code>#include &lt;forkpoint.h&gt;
+
+FPT_ALWAYS(
+    pressure &lt;= MAX_PRESSURE,
+    "pressure remains within safe range"
+);
+
+FPT_SOMETIMES(
+    retry_count &gt;= 3,
+    "multiple retries occur"
+);
+
+FPT_REACHABLE("recovery mode");
+FPT_UNREACHABLE("invalid controller state");</code></pre>
+          </div>
+
+          <div class="panel sdk-panel" role="tabpanel" data-sdk-panel="rust" hidden>
+            <div class="panel-head">
+              <span>sdk/rust · properties</span>
+              <span>use forkpoint::prelude::*;</span>
+            </div>
+            <pre class="code"><code>use forkpoint::prelude::*;
+
+assert_always!(
+    pressure &lt;= MAX_PRESSURE,
+    "pressure remains within safe range"
+);
+
+assert_sometimes!(
+    retry_count &gt;= 3,
+    "multiple retries occur"
+);
+
+assert_reachable!("recovery mode");
+assert_unreachable!("invalid controller state");</code></pre>
+          </div>
+        </div>
+
+        <div class="pill-row reveal">
+          <span class="pill">FPT_ALWAYS</span>
+          <span class="pill">FPT_SOMETIMES</span>
+          <span class="pill">FPT_REACHABLE</span>
+          <span class="pill">FPT_UNREACHABLE</span>
+          <span class="pill">catalog in ELF</span>
+        </div>
+        <p class="coming reveal">
+          Probes land in a property catalog in the ELF so Forkpoint can tell a
+          missing property from one that was never reached. The explorer judges
+          them across schedules; <code>--properties</code> writes JSONL verdicts.
+        </p>
       </div>
     </section>
 
