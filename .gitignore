@@ -1,0 +1,5 @@
+# Copyright 2026 Mist Tecnologia LTDA. All rights reserved.
+.DS_Store
+*.swp
+.idea/
+.vscode/

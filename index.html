@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Forkpoint — deterministic exploration for production firmware</title>
+    <meta
+      name="description"
+      content="Forkpoint runs real production firmware inside a Deterministic Virtual MCU and explores timing, concurrency, and fault scenarios — then replays every failure exactly."
+    />
+    <link rel="canonical" href="https://forkpoint.mist-os.com/" />
+    <link rel="preload" href="assets/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="assets/ibm-plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="assets/style.css" />
+    <meta property="og:title" content="Forkpoint" />
+    <meta
+      property="og:description"
+      content="Deterministic state-space exploration for production embedded firmware."
+    />
+    <meta property="og:url" content="https://forkpoint.mist-os.com/" />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <nav class="topbar">
+      <div class="topbar-inner">
+        <a class="mark" href="#top">Forkpoint</a>
+        <ul class="topbar-links">
+          <li><a href="#explore">Explore</a></li>
+          <li><a href="#replay">Replay</a></li>
+          <li><a href="#firmware">Firmware</a></li>
+          <li><a href="#how">How it works</a></li>
+        </ul>
+        <a class="mist-link" href="https://www.mist-os.com/">Mist</a>
+      </div>
+    </nav>
+
+    <header class="hero" id="top">
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-grid"></div>
+        <svg class="hero-diagram" viewBox="0 0 420 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="24" y="28" width="180" height="120" rx="10" stroke="#5b8def" stroke-opacity="0.7" />
+          <text x="40" y="56" fill="#8d9aaf" font-family="IBM Plex Mono, monospace" font-size="11">DVMC</text>
+          <text x="40" y="84" fill="#e7eef8" font-family="Space Grotesk, sans-serif" font-size="18" font-weight="700">CPU · IRQ · DMA</text>
+          <text x="40" y="110" fill="#8d9aaf" font-family="IBM Plex Mono, monospace" font-size="11">timers · peripherals · time</text>
+          <path d="M114 148v28" stroke="#3d9b8f" stroke-width="2" />
+          <circle cx="114" cy="184" r="4" fill="#3d9b8f" />
+          <rect x="216" y="148" width="180" height="144" rx="10" stroke="#3d9b8f" stroke-opacity="0.75" />
+          <text x="232" y="176" fill="#8d9aaf" font-family="IBM Plex Mono, monospace" font-size="11">Explorer</text>
+          <text x="232" y="204" fill="#e7eef8" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="700">schedules · faults</text>
+          <text x="232" y="228" fill="#e7eef8" font-family="Space Grotesk, sans-serif" font-size="16" font-weight="700">coverage · properties</text>
+          <text x="232" y="260" fill="#8d9aaf" font-family="IBM Plex Mono, monospace" font-size="11">→ failure → replay</text>
+          <path d="M204 88h48" stroke="#5b8def" stroke-width="2" stroke-dasharray="4 4" />
+          <circle cx="258" cy="88" r="3.5" fill="#5b8def" />
+          <text x="270" y="92" fill="#8d9aaf" font-family="IBM Plex Mono, monospace" font-size="10">events</text>
+        </svg>
+      </div>
+      <div class="hero-copy">
+        <h1>Forkpoint</h1>
+        <p class="lede">
+          Deterministic state-space exploration for production embedded
+          firmware.
+        </p>
+      </div>
+    </header>
+
+    <section class="block" id="explore">
+      <div class="wrap">
+        <div class="reveal">
+          <h2>Explore every interleaving that matters</h2>
+          <p class="sub">
+            Forkpoint executes real firmware inside a Deterministic Virtual MCU
+            and searches alternate executions — interrupt order, DMA completion,
+            timer fire, peripheral timing, and injected faults — to find bugs
+            that are hard to catch on a bench.
+          </p>
+        </div>
+        <div class="split reveal">
+          <div>
+            <p>
+              Nondeterminism is modeled as explicit events, so a recorded run
+              can be replayed exactly. Optional application-level properties
+              turn the guarantees you care about into checks the explorer can
+              judge across schedules.
+            </p>
+            <div class="pill-row">
+              <span class="pill">IRQs</span>
+              <span class="pill">DMA</span>
+              <span class="pill">timers</span>
+              <span class="pill">peripherals</span>
+              <span class="pill">faults</span>
+              <span class="pill">coverage</span>
+            </div>
+          </div>
+          <div class="panel" aria-label="Illustrative property results">
+            <div class="panel-head">
+              <span>explore · illustrative</span>
+              <span>128 seeds · 1m 08s</span>
+            </div>
+            <div class="panel-body">
+              <div class="scenario-meta">
+                <span>board <b>nucleo-ish.dts</b></span>
+                <span>seed <b>000000008f2c41d9</b></span>
+              </div>
+              <div class="check">
+                <span class="badge badge-pass">PASS</span>
+                <div>
+                  <strong>P1 no_lost_irq</strong>
+                  <p>Every raised interrupt was observed by the handler under all seeds.</p>
+                </div>
+              </div>
+              <div class="check">
+                <span class="badge badge-pass">PASS</span>
+                <div>
+                  <strong>P2 dma_bounds</strong>
+                  <p>DMA completions never wrote outside the registered buffer.</p>
+                </div>
+              </div>
+              <div class="check">
+                <span class="badge badge-fail">FAIL</span>
+                <div>
+                  <strong>P3 single_init</strong>
+                  <p>
+                    Fails on 3 of 128 seeds: a late timer IRQ re-enters init after
+                    the first path already claimed the peripheral.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="replay">
+      <div class="wrap">
+        <div class="reveal">
+          <h2>Reproduce any failure exactly</h2>
+          <p class="sub">
+            Every discovered failure is a deterministic artifact: the firmware
+            hash, the event decisions, and the outcome. Replay it on your desk,
+            minimize it to a short counterexample, and verify the fix under the
+            same conditions.
+          </p>
+        </div>
+        <div class="panel reveal" aria-label="Illustrative replay timeline">
+          <div class="panel-head">
+            <span>replay · virtual time</span>
+            <span id="replay-time">0 µs</span>
+          </div>
+          <div class="panel-body">
+            <div class="replay-controls">
+              <button type="button" id="replay-play">Play</button>
+              <button type="button" id="replay-step">Step</button>
+            </div>
+            <input
+              id="replay-scrub"
+              class="scrub"
+              type="range"
+              min="0"
+              max="5"
+              value="0"
+              aria-label="Scrub virtual time"
+            />
+            <div id="replay-events" class="timeline"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="firmware">
+      <div class="wrap reveal">
+        <h2>Production firmware first</h2>
+        <p class="sub">
+          Baseline execution targets the same firmware artifact you flash to the
+          device — no simulator-specific HAL, no modified RTOS, and no source
+          rewrite required to start. Virtual platforms are described with Device
+          Tree. CPU execution comes from pluggable architecture backends.
+        </p>
+        <div class="pill-row">
+          <span class="pill">Cortex-M</span>
+          <span class="pill">RISC-V</span>
+          <span class="pill">Device Tree</span>
+          <span class="pill">same ELF</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="how">
+      <div class="wrap">
+        <div class="reveal">
+          <h2>How it works</h2>
+          <p class="sub">
+            The exploration core stays independent of ISA, SoC, board, and RTOS.
+            Hardware and environmental nondeterminism enter only as controlled
+            events.
+          </p>
+        </div>
+        <div class="steps reveal">
+          <article class="step">
+            <div class="step-n">01</div>
+            <h3>Run on a DVMC</h3>
+            <p>
+              Load production firmware into a Deterministic Virtual MCU with
+              memory, IRQs, DMA, timers, and peripherals under virtual time.
+            </p>
+          </article>
+          <article class="step">
+            <div class="step-n">02</div>
+            <h3>Explore schedules</h3>
+            <p>
+              Search alternate event orderings, inject faults, collect coverage,
+              and evaluate properties across the space that matters.
+            </p>
+          </article>
+          <article class="step">
+            <div class="step-n">03</div>
+            <h3>Replay the failure</h3>
+            <p>
+              Keep a bit-reproducible recording, shrink it to an understandable
+              counterexample, and confirm the fix under the same seed.
+            </p>
+          </article>
+        </div>
+        <p class="coming reveal">Access and docs are coming soon.</p>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>© 2026 Mist Tecnologia LTDA (Mist Technologies)</p>
+        <p><a href="https://www.mist-os.com/">www.mist-os.com</a></p>
+      </div>
+    </footer>
+
+    <script src="assets/site.js" defer></script>
+  </body>
+</html>

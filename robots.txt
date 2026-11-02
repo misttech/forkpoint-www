@@ -1,0 +1,12 @@
+# https://forkpoint.mist-os.com
+#
+# GitHub Pages publishes this whole tree. Only the landing page is the site.
+
+User-agent: *
+Allow: /
+Disallow: /.github/
+Disallow: /*.md$
+Disallow: /LICENSE
+Disallow: /NOTICE
+Disallow: /Makefile
+Disallow: /CNAME
