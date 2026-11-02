@@ -7,7 +7,7 @@
     <title>Forkpoint — deterministic exploration for production firmware</title>
     <meta
       name="description"
-      content="Forkpoint runs real production firmware inside a Deterministic Virtual MCU and explores timing, concurrency, and fault scenarios — then replays every failure exactly."
+      content="Forkpoint runs real production firmware inside a Deterministic Virtual MCU, explores timing and concurrency, scripts I²C and radio peers, faults Ethernet packet order, and replays every failure exactly."
     />
     <link rel="canonical" href="https://forkpoint.mist-os.com/" />
     <link rel="preload" href="assets/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
@@ -27,6 +27,7 @@
         <a class="mark" href="#top">Forkpoint</a>
         <ul class="topbar-links">
           <li><a href="#explore">Explore</a></li>
+          <li><a href="#world">Buses &amp; air</a></li>
           <li><a href="#replay">Replay</a></li>
           <li><a href="#firmware">Firmware</a></li>
           <li><a href="#how">How it works</a></li>
@@ -90,6 +91,9 @@
               <span class="pill">peripherals</span>
               <span class="pill">faults</span>
               <span class="pill">coverage</span>
+              <span class="pill">BLE</span>
+              <span class="pill">Ethernet</span>
+              <span class="pill">I²C</span>
             </div>
           </div>
           <div class="panel" aria-label="Illustrative property results">
@@ -129,6 +133,60 @@
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="block" id="world">
+      <div class="wrap">
+        <div class="reveal">
+          <h2>Radios, networks, and scripted buses</h2>
+          <p class="sub">
+            Firmware rarely fails alone. Forkpoint models the peers a board talks
+            to — over the air, on Ethernet, and on wired buses — as deterministic
+            events you can script, fault, and replay.
+          </p>
+        </div>
+        <div class="steps reveal world-grid">
+          <article class="step">
+            <div class="step-n">Radio</div>
+            <h3>BLE on a shared air</h3>
+            <p>
+              Run several boards as one system. Bluetooth LE frames pass between
+              linked nodes only through a coordinator, stamped with virtual time.
+              Arrival order is (time, sender, sequence); link loss and RSSI are
+              seeded so the same topology always yields the same air. IEEE
+              802.15.4 frames can be injected the same way scripted bus traffic
+              is. Captures land in a pcap for Wireshark.
+            </p>
+          </article>
+          <article class="step">
+            <div class="step-n">Network</div>
+            <h3>Packet ordering and faults</h3>
+            <p>
+              On a board’s Ethernet link, fault plans deliberately misbehave:
+              reorder TCP segments, duplicate ACKs, hold FIN, open gaps, reset
+              connections, ignore DHCP or DNS, flood ARP, and more. Each fault
+              applies to a counted set of matching frames and is kept in the
+              record so replay sees the same network.
+            </p>
+          </article>
+          <article class="step">
+            <div class="step-n">Buses</div>
+            <h3>I²C scripting</h3>
+            <p>
+              An I²C script plays timed external inputs into the run: I²C
+              transfers, GPIO levels, ADC voltages, CAN frames, IEEE 802.15.4
+              frames, and UDP datagrams from hosts on the link. Fuzz can emit a
+              script that explore replays exactly — same virtual times, same
+              bytes.
+            </p>
+          </article>
+        </div>
+        <p class="coming reveal">
+          Wi‑Fi station/AP stacks are not modeled yet; networked ESP32 examples
+          use the board Ethernet path. BLE multi-node runs use radios such as
+          the nRF52840’s.
+        </p>
       </div>
     </section>
 
