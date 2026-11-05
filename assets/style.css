@@ -127,13 +127,17 @@ a {
 }
 
 .mist-link {
-  color: var(--muted);
+  color: var(--ink);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
-.mist-link:hover {
-  color: var(--accent);
+.mist-link span {
+  color: var(--accent-2);
 }
 
 /* Hero */
@@ -364,6 +368,16 @@ section.block {
 .event.is-active {
   background: rgba(91, 141, 239, 0.12);
   color: var(--ink);
+}
+
+.event.is-fail,
+.event.is-fail time {
+  color: var(--fail);
+}
+
+.event.is-fail.is-active {
+  background: rgba(227, 107, 107, 0.14);
+  color: var(--fail);
 }
 
 .event time {

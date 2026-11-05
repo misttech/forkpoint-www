@@ -50,7 +50,7 @@
     { t: "840 µs", text: "timer IRQ · scheduler tick" },
     { t: "1.40 ms", text: "DMA complete · buffer handoff" },
     { t: "2.10 ms", text: "I²C NACK · retry path" },
-    { t: "2.85 ms", text: "property fail · double-free probe" },
+    { t: "2.85 ms", text: "property fail · double-free probe", fail: true },
   ];
 
   const list = document.getElementById("replay-events");
@@ -62,7 +62,8 @@
 
   events.forEach((ev, i) => {
     const row = document.createElement("div");
-    row.className = "event" + (i === 0 ? " is-active" : "");
+    row.className =
+      "event" + (i === 0 ? " is-active" : "") + (ev.fail ? " is-fail" : "");
     row.dataset.index = String(i);
     row.innerHTML = `<time>${ev.t}</time><span>${ev.text}</span>`;
     list.appendChild(row);
